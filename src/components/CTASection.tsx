@@ -42,9 +42,9 @@ const CTASection = () => {
                 Chat with our AI-powered assistant to get real-time answers to your sustainability questions and guidance.
               </p>
               <Button asChild className="w-full bg-eco-sky hover:bg-eco-sky/80 text-white font-medium mt-auto">
-                <Link to="/ecochat">
+                <a href="https://ecochat.streamlit.app/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-foreground transition-colors">
                   Chat with EcoBot
-                </Link>
+                </a>
               </Button>
             </div>
           </div>

@@ -47,9 +47,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/ecochat" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a href="https://ecochat.streamlit.app/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-foreground transition-colors">
                   EcoChat
-                </Link>
+                </a>
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">

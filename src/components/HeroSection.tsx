@@ -38,10 +38,10 @@ const HeroSection = () => {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-eco-sky text-eco-sky hover:text-eco-sky font-medium">
-                <Link to="/ecochat">
+                <a href="https://ecochat.streamlit.app/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-foreground transition-colors">
                   Chat with EcoBot
                   <MessageSquare className="ml-2 h-4 w-4" />
-                </Link>
+                </a>
               </Button>
             </div>
             

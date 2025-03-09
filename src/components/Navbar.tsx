@@ -74,13 +74,9 @@ const Navbar = () => {
             >
               Calculator
             </Link>
-            <Link
-              to="/ecochat"
-              className="block text-foreground/80 hover:text-foreground transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <a href="https://ecochat.streamlit.app/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-foreground transition-colors">
               EcoChat
-            </Link>
+            </a>
             <Link
               to="/blog"
               className="block text-foreground/80 hover:text-foreground transition-colors"
