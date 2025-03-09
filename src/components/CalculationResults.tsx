@@ -168,7 +168,7 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ results, onRese
                       <XAxis dataKey="name" />
                       <YAxis unit=" kg" />
                       <Tooltip formatter={(value) => [`${value} kg CO₂e`, "Emissions"]} />
-                      <Bar dataKey="emissions" nameKey="name" />
+                      <Bar dataKey="emissions" />
                     </RechartBar>
                   </ResponsiveContainer>
                 </div>
