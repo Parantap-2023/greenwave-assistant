@@ -26,12 +26,12 @@ const Navbar = () => {
             <Link to="/" className="text-foreground/80 hover:text-foreground transition-colors">
               Home
             </Link>
-            <Link to="/calculator" className="text-foreground/80 hover:text-foreground transition-colors">
+            <Link to="/Calculator" className="text-foreground/80 hover:text-foreground transition-colors">
               Calculator
             </Link>
-            <Link to="/ecochat" className="text-foreground/80 hover:text-foreground transition-colors">
+            <a href="https://ecochat.streamlit.app/" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-foreground transition-colors">
               EcoChat
-            </Link>
+            </a>
             <Link to="/blog" className="text-foreground/80 hover:text-foreground transition-colors">
               Blog
             </Link>

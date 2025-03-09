@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import EcoChatPage from "./pages/EcoChatPage";
+import EmissionCalculator from "./components/EmissionCalculator";
+import Sustainability from "./components/Sustainability";
 
 const queryClient = new QueryClient();
 
@@ -19,8 +21,11 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/ecochat" element={<EcoChatPage />} />
+          <Route path="/calculator" element={<EmissionCalculator />} />
+          <Route path="/sustainability" element={<Sustainability />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
+
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
