@@ -28,10 +28,16 @@ const suggestions = [
   "What are the most sustainable food choices?",
   "Tell me about renewable energy options for my home",
   "How does air travel impact the environment?",
-  "What is the carbon footprint of my daily commute?",
+  "What is the carbon footprint of HDPE material?",
 ];
 
-// Backend API URL - update this with your actual backend URL when deployed
+// Update this to your actual API URL
+// Local URL for development
+// const API_URL = "http://localhost:8000/chat";
+// Use this when deployed to production
+// const API_URL = "https://your-production-api.com/chat";
+// For demo purposes (fallback mode)
+const USE_FALLBACK = true;
 const API_URL = "http://localhost:8000/chat";
 
 const EcoChat = () => {
@@ -39,6 +45,7 @@ const EcoChat = () => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [useFallback, setUseFallback] = useState(USE_FALLBACK);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const scrollToBottom = () => {
@@ -48,6 +55,33 @@ const EcoChat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Check if the API is available
+  useEffect(() => {
+    const checkApiAvailability = async () => {
+      try {
+        const response = await fetch(API_URL.replace('/chat', ''), { 
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          // Signal for timeout
+          signal: AbortSignal.timeout(5000)
+        });
+        
+        if (response.ok) {
+          console.log("EcoChat API is available");
+          setUseFallback(false);
+        } else {
+          console.log("EcoChat API returned an error status");
+          setUseFallback(true);
+        }
+      } catch (error) {
+        console.log("EcoChat API is not available, using fallback mode");
+        setUseFallback(true);
+      }
+    };
+    
+    checkApiAvailability();
+  }, []);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -64,6 +98,24 @@ const EcoChat = () => {
     setInputValue("");
     setIsLoading(true);
     
+    if (useFallback) {
+      // Use fallback mode - simulate API response
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+      const responseText = handleFallbackResponse(userMessage.text);
+      
+      // Add bot response
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: responseText,
+        sender: "bot",
+        timestamp: new Date(),
+      };
+      
+      setMessages((prev) => [...prev, botMessage]);
+      setIsLoading(false);
+      return;
+    }
+    
     try {
       // Send request to backend API
       const response = await fetch(API_URL, {
@@ -73,7 +125,7 @@ const EcoChat = () => {
         },
         body: JSON.stringify({ 
           message: userMessage.text,
-          // Optional: Send chat history (last 5 messages)
+          // Send chat history (last 5 messages)
           history: messages.slice(-5).map(msg => ({
             role: msg.sender === "user" ? "user" : "assistant",
             content: msg.text
@@ -105,10 +157,12 @@ const EcoChat = () => {
     } catch (error) {
       console.error("Failed to get response from EcoChat backend:", error);
       
-      // Add error message
+      // Add error message and switch to fallback mode
+      setUseFallback(true);
+      
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Sorry, I'm having trouble connecting to my knowledge base. Please try again later.",
+        text: "Sorry, I'm having trouble connecting to my knowledge base. I'll continue in a limited mode with general information only.",
         sender: "bot",
         timestamp: new Date(),
       };
@@ -117,7 +171,7 @@ const EcoChat = () => {
       
       toast({
         title: "Connection Error",
-        description: "Failed to connect to EcoChat service",
+        description: "Switched to fallback mode with limited responses",
         variant: "destructive",
       });
     } finally {
@@ -136,13 +190,15 @@ const EcoChat = () => {
     setInputValue(suggestion);
   };
 
-  // Function to enable mock responses when backend is not available
-  const handleFallbackResponse = () => {
+  // Function to provide fallback responses when backend is not available
+  const handleFallbackResponse = (input: string) => {
     // Mock response based on user input
     let responseText = "";
-    const lowercaseInput = inputValue.toLowerCase();
+    const lowercaseInput = input.toLowerCase();
     
-    if (lowercaseInput.includes("carbon") || lowercaseInput.includes("footprint")) {
+    if (lowercaseInput.includes("hdpe") || lowercaseInput.includes("plastic")) {
+      responseText = "**HDPE (High-Density Polyethylene) Emissions Data:**\n\nThe carbon footprint of HDPE production is approximately 1.8-2.1 kg CO2e per kg of material. This is lower than many other plastics like PET (2.7 kg CO2e/kg) or PVC (2.9 kg CO2e/kg).\n\n**Real-world equivalents:**\n- 2 kg of CO2e is equivalent to driving a car for ~8 miles (13 km)\n- Or running a laptop for about 10 days\n\n**Bio-HDPE** made from sugarcane or other plant materials can have 70-80% lower emissions compared to fossil-based HDPE.";
+    } else if (lowercaseInput.includes("carbon") || lowercaseInput.includes("footprint")) {
       responseText = "Carbon footprint is the total amount of greenhouse gases that are generated by our actions. The average person's carbon footprint is about 4 tons per year. You can reduce your carbon footprint by using public transportation, reducing meat consumption, and choosing energy-efficient appliances.";
     } else if (lowercaseInput.includes("food") || lowercaseInput.includes("diet")) {
       responseText = "Food choices have a significant impact on your carbon footprint. Plant-based diets generally have a lower carbon footprint than meat-heavy diets. Beef and lamb are particularly carbon-intensive. Consider reducing your meat consumption and opting for locally-grown, seasonal produce when possible.";
@@ -153,7 +209,7 @@ const EcoChat = () => {
     } else if (lowercaseInput.includes("commute") || lowercaseInput.includes("car")) {
       responseText = "The carbon footprint of your daily commute depends on your mode of transportation and distance. Driving a gasoline car produces about 0.4 kg of CO2 per mile. Consider carpooling, using public transportation, biking, or walking to reduce your commute's environmental impact.";
     } else {
-      responseText = "That's an interesting question about sustainability! While I'm just a demo version with limited knowledge, I'm designed to provide information on various sustainability topics, calculate emissions for specific activities, and offer personalized recommendations based on your lifestyle.";
+      responseText = "That's an interesting question about sustainability! While I'm currently in offline mode with limited knowledge, I typically provide information on various sustainability topics, calculate emissions for specific activities, and offer personalized recommendations based on your lifestyle. My full capabilities require connection to my knowledge base.";
     }
     
     return responseText;
@@ -169,6 +225,11 @@ const EcoChat = () => {
           <p className="text-muted-foreground text-lg">
             Chat with our AI-powered assistant to get answers to your sustainability questions and personalized guidance.
           </p>
+          {useFallback && (
+            <div className="mt-2 p-2 bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 rounded-md text-sm">
+              Running in offline mode with limited responses. Some advanced features are unavailable.
+            </div>
+          )}
         </div>
 
         <Card className="eco-card border-border/50 overflow-hidden">
@@ -185,8 +246,8 @@ const EcoChat = () => {
                 <CardDescription>Your sustainability assistant</CardDescription>
               </div>
               <div className="flex items-center ml-auto">
-                <span className="flex h-2.5 w-2.5 rounded-full bg-eco-emerald mr-2"></span>
-                <span className="text-sm text-muted-foreground">Online</span>
+                <span className={`flex h-2.5 w-2.5 rounded-full ${useFallback ? "bg-amber-500" : "bg-eco-emerald"} mr-2`}></span>
+                <span className="text-sm text-muted-foreground">{useFallback ? "Limited Mode" : "Online"}</span>
               </div>
             </div>
           </CardHeader>
@@ -214,7 +275,11 @@ const EcoChat = () => {
                       : "bg-muted rounded-tl-none"
                   }`}
                 >
-                  <p>{message.text}</p>
+                  <div dangerouslySetInnerHTML={{ 
+                    __html: message.text
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/\n/g, '<br />')
+                  }} />
                   <div
                     className={`text-xs mt-1 ${
                       message.sender === "user" ? "text-white/70" : "text-muted-foreground"
