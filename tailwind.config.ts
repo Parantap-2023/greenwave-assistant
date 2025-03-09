@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Sustainability brand colors
+				eco: {
+					emerald: '#10B981',
+					sage: '#84CC16',
+					leaf: '#22C55E',
+					forest: '#047857',
+					sky: '#0EA5E9',
+					teal: '#14B8A6',
+					earth: '#92400E',
+					sand: '#F59E0B',
 				}
 			},
 			borderRadius: {
@@ -84,11 +96,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 6s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'gradient-eco': 'linear-gradient(135deg, #10B981 0%, #0EA5E9 100%)',
+				'gradient-leaf': 'linear-gradient(135deg, #22C55E 0%, #84CC16 100%)'
 			}
 		}
 	},
